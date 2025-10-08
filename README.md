@@ -1,13 +1,15 @@
-#TimeInvoice
+# TimeInvoice
 A freelancer invoice and time tracking application built with Laravel and React(currently in development).
 
-#Features
+## Features
+
 Project tracking
 Client management
 Time entry logging
 Invoice generation
 
-#Tech Stack
+## Tech Stack
+
 Laravel
 React
 SQLite
