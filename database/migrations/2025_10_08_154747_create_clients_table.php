@@ -13,11 +13,11 @@ return new class extends Migration {
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('cascade'); //nullable for API endpoints test
             $table->string('name');
             $table->string('email');
-            $table->string('address');
-            $table->unique(['user_id', 'email']);
+            $table->string('address')->nullable();
+            // $table->unique(['user_id', 'email']); API endpoints test
             $table->timestamps();
         });
     }
