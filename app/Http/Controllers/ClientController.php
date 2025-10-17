@@ -45,7 +45,7 @@ class ClientController extends Controller
         $validatedData = request()->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'email', Rule::unique('clients', 'email')->ignore($client->id)],
-            'address' => ['sometimes', 'string'],
+            'address' => ['sometimes', 'nullable', 'string'],
         ]);
 
         $client->update($validatedData);
