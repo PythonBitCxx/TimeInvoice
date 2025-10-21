@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\TimeEntry;
 
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class TimeEntryController extends Controller
 {
@@ -14,9 +14,9 @@ class TimeEntryController extends Controller
         return response()->json($timeEntries);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $validatedData = request()->validate([
+        $validatedData = $request->validate([
             'project_id' => ['required', 'integer', 'exists:projects,id'],
             'date' => ['required', 'date'],
             'hours' => ['required', 'numeric', 'min:0', 'max:24'],
@@ -36,9 +36,9 @@ class TimeEntryController extends Controller
 
     }
 
-    public function update(TimeEntry $timeEntry)
+    public function update(TimeEntry $timeEntry, Request $request)
     {
-        $validatedData = request()->validate([
+        $validatedData = $request->validate([
             'project_id' => ['sometimes', 'integer', 'exists:projects,id'],
             'date' => ['sometimes', 'date'],
             'hours' => ['sometimes', 'numeric', 'min:0', 'max:24'],

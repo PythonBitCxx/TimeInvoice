@@ -4,47 +4,72 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use Illuminate\Validation\Rule;
 
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
 
-        //After Implementing Authentication: $clients = request()->user()->clients()->get();
-        $clients = Client::all();
+
+        $clients = $user->clients()->get();
         return response()->json($clients, 200);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $validatedData = request()->validate([
+        $userId = $request->user()->id;
+        $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:clients,email'], //todo after auth: scope unique rule to auth user's id
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('clients', 'email')->where(function ($query) use ($userId) {
+                    return $query->where('user_id', $userId);
+                })
+            ],
             'address' => ['nullable', 'string'],
         ]);
 
-        //After Implementing Authentication: $client = request()->user()->clients()->create($validatedData);
-        $client = Client::create($validatedData);
+        $client = $request->user()->clients()->create($validatedData);
 
         return response()->json($client, 201);
 
 
     }
 
-    public function show(Client $client)
+    public function show(Client $client, Request $request)
     {
-        //todo: auth check
+        $user = $request->user();
+        if ($client->user_id !== $user->id) {
+            abort(403, 'Unauthorised action. You do not own this client.');
+
+        }
+
         return response()->json($client, 200);
 
     }
 
-    public function update(Client $client)
+    public function update(Client $client, Request $request)
     {
-        //todo: auth check
-        $validatedData = request()->validate([
+        $user = $request->user();
+        $userId = $user->id;
+
+        if ($client->user_id !== $user->id) {
+            abort(403, 'Unauthorised action. You do not own this client.');
+        }
+
+        $validatedData = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', Rule::unique('clients', 'email')->ignore($client->id)],
+            'email' => [
+                'sometimes',
+                'email',
+                Rule::unique('clients', 'email')
+                    ->ignore($client->id)->where(function ($query) use ($userId) {
+                        return $query->where('user_id', $userId);
+                    })
+            ],
             'address' => ['sometimes', 'nullable', 'string'],
         ]);
 
@@ -53,9 +78,14 @@ class ClientController extends Controller
         return response()->json($client, 200);
 
     }
-    public function destroy(Client $client)
+    public function destroy(Client $client, Request $request)
     {
-        //todo: auth check
+        $user = $request->user();
+
+        if ($client->user_id !== $user->id) {
+            abort(403, 'Unauthorised action. You do not own this client.');
+        }
+
         $client->delete();
 
         return response()->json(null, 204);

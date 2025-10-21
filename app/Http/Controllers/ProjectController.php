@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Project;
+use App\Models\Client;
 
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -16,9 +17,9 @@ class ProjectController extends Controller
 
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $validatedData = request()->validate([
+        $validatedData = $request->validate([
             'client_id' => ['required', 'integer', 'exists:clients,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -39,9 +40,9 @@ class ProjectController extends Controller
 
     }
 
-    public function update(Project $project)
+    public function update(Project $project, Request $request)
     {
-        $validatedData = request()->validate([
+        $validatedData = $request->validate([
             'client_id' => ['sometimes', 'integer', 'exists:clients,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
