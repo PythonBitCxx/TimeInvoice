@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('business_name')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
-            $table->string('hourly_rate');
+            //$table->string('hourly_rate');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

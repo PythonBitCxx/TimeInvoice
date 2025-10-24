@@ -6,15 +6,17 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TimeEntryController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserController;
 
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function () {
-        return request()->user();
-    });
+    Route::get('/user', [UserController::class, 'show']);
+    Route::put('/user', [UserController::class, 'update']);
+    Route::put('/user/password', [UserController::class, 'updatePassword']);
+    //Route::delete('/user', [UserController::class, 'destroy']);
 
     //Route::apiResource('clients', ClientController::class);
 
